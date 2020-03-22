@@ -22,13 +22,24 @@ axios.get("https://api.github.com/users/ms177")
 */
 const entryPoint = document.querySelector('.cards')
 
-axios.get("https://api.github.com/users/ms177")
-  .then(response => {
-  const myData = createCard(response.data)
-  
-  entryPoint.appendChild(myData)
+const autoCreateCard = (userLink)=>{ 
+  axios.get(userLink)
+    .then(response => {
+    const myData = createCard(response.data)
+    
+    entryPoint.appendChild(myData)
+  });
+}
 
-});
+autoCreateCard("https://api.github.com/users/ms177");
+
+// axios.get("https://api.github.com/users/ms177")
+//   .then(response => {
+//   const myData = createCard(response.data)
+  
+//   entryPoint.appendChild(myData)
+
+// });
 
 /* Step 5: Now that you have your own card getting added to the DOM, either 
           follow this link in your browser https://api.github.com/users/<Your github name>/followers 
@@ -47,15 +58,12 @@ const followersArray = [
   'luishrd',
   'bigknell'];
 
+  
+
   followersArray.forEach(user =>{
     userLink = `https://api.github.com/users/${user}`;
-    axios.get(userLink)
-    .then(response => {
-    const myData = createCard(response.data)
-    
-    entryPoint.appendChild(myData)
+    autoCreateCard(userLink)
   });
-  })
 
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
@@ -89,16 +97,23 @@ const createCard = (obj) =>{
   const following = document.createElement('p');
   const bio = document.createElement('p');
 
-  card.append(userImg,cardInfo, name, username, location, profile, followers, following, bio);
+  card.classList.add('card');
+  cardInfo.classList.add('card-info');
+  name.classList.add('name');
+  username.classList.add('username');
+
+  card.append(userImg,cardInfo);
+  cardInfo.append(name, username, location, profile, followers, following, bio)
 
   userImg.src = obj.avatar_url;
   name.textContent= obj.name;
   username.textContent= obj.login;
-  location.textContent= obj.location;
-  profile.textContent= obj.html_url;
+  location.textContent= `Location: ${obj.location}`;
+  profile.textContent= `Profile: ${obj.html_url}`;
+  profile.href=obj.html_url;
   followers.textContent = `Followers: ${obj.followers}`;
   following.textContent= `Following: ${obj.following}`;
-  bio.textContent= obj.bio;
+  bio.textContent= `Bio: ${obj.bio}`;
 
   return card;
 
