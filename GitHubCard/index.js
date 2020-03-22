@@ -3,6 +3,10 @@
            https://api.github.com/users/<your name>
 */
 
+axios.get("https://api.github.com/users/ms177")
+.then(response => {
+  console.log('my data is', response.data)
+});
 
 
 /* Step 2: Inspect and study the data coming back, this is YOUR 
@@ -12,9 +16,19 @@
    Skip to Step 3.
 */
 
+
 /* Step 4: Pass the data received from Github into your function, 
            create a new component and add it to the DOM as a child of .cards
 */
+const entryPoint = document.querySelector('.cards')
+
+axios.get("https://api.github.com/users/ms177")
+  .then(response => {
+  const myData = createCard(response.data)
+  
+  entryPoint.appendChild(myData)
+
+});
 
 /* Step 5: Now that you have your own card getting added to the DOM, either 
           follow this link in your browser https://api.github.com/users/<Your github name>/followers 
@@ -26,7 +40,22 @@
           user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+const followersArray = [
+  'tetondan',
+  'dustinmyers',
+  'justsml',
+  'luishrd',
+  'bigknell'];
+
+  followersArray.forEach(user =>{
+    userLink = `https://api.github.com/users/${user}`;
+    axios.get(userLink)
+    .then(response => {
+    const myData = createCard(response.data)
+    
+    entryPoint.appendChild(myData)
+  });
+  })
 
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
@@ -47,6 +76,34 @@ const followersArray = [];
 </div>
 
 */
+
+const createCard = (obj) =>{
+  const card = document.createElement('card');
+  const userImg = document.createElement('img');
+  const cardInfo = document.createElement('card-info');
+  const name = document.createElement('h3');
+  const username = document.createElement('username');
+  const location = document.createElement('p');
+  const profile = document.createElement('a');
+  const followers = document.createElement('p');
+  const following = document.createElement('p');
+  const bio = document.createElement('p');
+
+  card.append(userImg,cardInfo, name, username, location, profile, followers, following, bio);
+
+  userImg.src = obj.avatar_url;
+  name.textContent= obj.name;
+  username.textContent= obj.login;
+  location.textContent= obj.location;
+  profile.textContent= obj.html_url;
+  followers.textContent = `Followers: ${obj.followers}`;
+  following.textContent= `Following: ${obj.following}`;
+  bio.textContent= obj.bio;
+
+  return card;
+
+
+}
 
 /* List of LS Instructors Github username's: 
   tetondan
